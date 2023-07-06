@@ -12,6 +12,9 @@ import { ItemEntity } from "../item/item.entity";
 import { CreateOrderRequestBaseDto } from "./dtos/order.dto";
 import { OrderItemEntity } from "./orderItem.entity";
 import { OrderStatus } from "./enum";
+import { CartEntity } from "../cart/cart.entity";
+import { UserEntity } from "../user/user.entity";
+import { CartItemEntity } from "../cart/cart-item.entity";
 
 interface OrderServiceInterface {
   create(c: CreateOrderRequestBaseDto, userId: string): Promise<void>;
@@ -27,6 +30,8 @@ export class OrderService implements OrderServiceInterface {
     private orderItemRepository: Repository<OrderItemEntity>,
     @InjectRepository(ItemEntity)
     private itemRepository: Repository<ItemEntity>,
+    @InjectRepository(CartItemEntity)
+    private cartItemRepository: Repository<CartItemEntity>,
   ) {}
 
   async create(c: CreateOrderRequestBaseDto, userId: string): Promise<void> {
@@ -80,6 +85,12 @@ export class OrderService implements OrderServiceInterface {
       order.orderItems = r;
 
       await this.orderRepository.save(order);
+
+      await this.cartItemRepository.delete({
+        item: {
+          id: In(itemIds),
+        },
+      });
       // update quantity
       await Promise.all(
         c.data.map(item => {
@@ -90,7 +101,8 @@ export class OrderService implements OrderServiceInterface {
 
       this.logger.log(`Create order success`);
     } catch (e) {
-      throw new BadRequestException(e.message);
+      console.log(e.stack);
+      throw new BadRequestException(e);
     }
   }
 

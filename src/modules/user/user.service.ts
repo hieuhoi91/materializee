@@ -22,6 +22,7 @@ import { CustomHttpException } from "../../common/exception/custom-http.exceptio
 import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 import { UserRole } from "../../common/enum/user-role";
 import { CartService } from "../cart/cart.service";
+import { CartEntity } from "../cart/cart.entity";
 
 @Injectable()
 export class UserService {
@@ -32,6 +33,8 @@ export class UserService {
     private userSettingRepository: Repository<UserSettingsEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>, // private validatorService: ValidatorService,
+    @InjectRepository(CartEntity)
+    private cartRepository: Repository<CartEntity>,
   ) {}
 
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
@@ -77,12 +80,14 @@ export class UserService {
       });
     }
 
-    const userCart = await this.cartService.createCart();
-
     const user = this.userRepository.create(userRegisterDto);
-    user.cart = userCart;
 
     const userRecord = await this.userRepository.save(user);
+
+    const userCart = await this.cartService.createCart(userRecord.id);
+
+    user.cart_id = userCart.id;
+    await this.userRepository.save(user);
     // if (file && !this.validatorService.isImage(file.mimetype)) {
     //   throw new FileNotImageException();
     // }

@@ -26,7 +26,13 @@ export class CartController {
   @Post("/add")
   @Auth()
   async addToCart(@Request() req, @Body() addToCartDto: AddToCartDto) {
-    await this.cartService.addToCart(req.user.cartId, addToCartDto);
+    console.log(req.user);
+
+    await this.cartService.addToCart(
+      req.user.id,
+      req.user.cart_id,
+      addToCartDto,
+    );
     return new SimpleResponse(null);
   }
 

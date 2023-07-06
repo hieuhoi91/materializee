@@ -34,13 +34,17 @@ export class CartService {
     });
   }
   async addToCart(
+    userId: string,
     cartId: string,
     addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
     let cart = await this.findCartById(cartId);
+    if (!cart) {
+      cart = await this.createCart(userId);
+    }
 
     for (const item of addToCartDto.items) {
-      const existingCartItem = cart.cart_items.find(
+      const existingCartItem = cart.cart_items?.find(
         cartItem => cartItem.item.id === item.itemId,
       );
 
@@ -48,9 +52,12 @@ export class CartService {
         existingCartItem.quantity += item.quantity;
         await this.cartItemRepository.save(existingCartItem);
       } else {
+        const i = await this.itemRepo.findOne({
+          where: { id: item.itemId },
+        });
         const newCartItem = await this.cartItemRepository.save({
           cartId: cart.id,
-          item: { id: item.itemId },
+          item: i,
           quantity: item.quantity,
         });
         cart.cart_items?.push(newCartItem);
@@ -61,8 +68,10 @@ export class CartService {
     return cart;
   }
 
-  async createCart(): Promise<CartEntity> {
-    return this.cartRepository.save({});
+  async createCart(userId: string): Promise<CartEntity> {
+    return this.cartRepository.save({
+      user_id: userId,
+    });
   }
 
   async deleteCartItem(cartId: string, itemsId: string[]): Promise<CartEntity> {

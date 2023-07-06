@@ -44,15 +44,11 @@ export class UserEntity extends BaseEntity {
   @OneToOne(() => UserSettingsEntity, userSettings => userSettings.user)
   settings?: UserSettingsEntity;
 
-  @OneToOne(() => CartEntity)
-  @JoinColumn({ name: "cart_id" })
-  cart: CartEntity;
-
-  @Column({ name: "cart_id" })
-  cartId: string;
-
   @OneToMany(() => ReviewEntity, r => r.user)
   reviews: ReviewEntity[];
+
+  @Column({ nullable: true })
+  cart_id?: string;
 
   @BeforeInsert()
   hashPassword() {

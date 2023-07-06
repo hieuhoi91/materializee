@@ -21,8 +21,7 @@ export class OrderItemEntity extends BaseEntity {
   @Column({ nullable: false })
   quantity: number;
 
-  @OneToOne(() => ItemEntity)
-  @JoinColumn({ name: "item_id" })
+  @ManyToOne(() => ItemEntity)
   item: ItemEntity;
 
   @ManyToOne(() => UserEntity)
