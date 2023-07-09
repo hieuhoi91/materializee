@@ -122,8 +122,17 @@ export class OrderService implements OrderServiceInterface {
       });
 
       orders.forEach(order => {
-        const review = reviews.find(review => review.order_id === order.id);
-        order.is_reviewed = review ? true : false;
+        order.orderItems.forEach(item => {
+          const review = reviews.find(
+            review => review.order_item_id === item.id,
+          );
+
+          if (review) {
+            item.is_reviewed = true;
+          } else {
+            item.is_reviewed = false;
+          }
+        });
       });
       return orders;
     } catch (e) {
