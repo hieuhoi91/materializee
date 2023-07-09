@@ -36,7 +36,9 @@ export class ReviewService implements ReviewServiceInterface {
         rating: c.rating,
         item: item,
         user_id: userId,
+        order_id: c.order_id,
       });
+
       await this.reviewRepository.save(review); // luu vao db
     } catch (e) {
       throw new BadRequestException(e.message);

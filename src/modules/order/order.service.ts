@@ -15,6 +15,7 @@ import { OrderStatus } from "./enum";
 import { CartEntity } from "../cart/cart.entity";
 import { UserEntity } from "../user/user.entity";
 import { CartItemEntity } from "../cart/cart-item.entity";
+import { ReviewEntity } from "../review/review.entity";
 
 interface OrderServiceInterface {
   create(c: CreateOrderRequestBaseDto, userId: string): Promise<void>;
@@ -32,6 +33,8 @@ export class OrderService implements OrderServiceInterface {
     private itemRepository: Repository<ItemEntity>,
     @InjectRepository(CartItemEntity)
     private cartItemRepository: Repository<CartItemEntity>,
+    @InjectRepository(ReviewEntity)
+    private reviewRepository: Repository<ReviewEntity>,
   ) {}
 
   async create(c: CreateOrderRequestBaseDto, userId: string): Promise<void> {
@@ -108,11 +111,20 @@ export class OrderService implements OrderServiceInterface {
 
   async list(userId: string): Promise<any> {
     try {
-      const orders = await this.orderRepository.find({
+      // check user already review
+      const orders: any = await this.orderRepository.find({
         where: { user_id: userId },
-        relations: ["orderItems"],
+        relations: ["orderItems", "orderItems.item"],
       });
 
+      const reviews = await this.reviewRepository.find({
+        where: { user_id: userId },
+      });
+
+      orders.forEach(order => {
+        const review = reviews.find(review => review.order_id === order.id);
+        order.is_reviewed = review ? true : false;
+      });
       return orders;
     } catch (e) {
       throw new BadRequestException(e.message);

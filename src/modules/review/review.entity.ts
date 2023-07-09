@@ -30,6 +30,9 @@ export class ReviewEntity extends BaseEntity {
   @Column({ name: "user_id" })
   user_id: string;
 
+  @Column({ name: "order_id" })
+  order_id: string;
+
   @ManyToOne(() => UserEntity, user => user.reviews)
   @JoinColumn({ name: "user_id" })
   user: UserEntity;

@@ -9,6 +9,7 @@ import { OrderService } from "./order.service";
 import { UserEntity } from "../user/user.entity";
 import { CartItemEntity } from "../cart/cart-item.entity";
 import { CartEntity } from "../cart/cart.entity";
+import { ReviewEntity } from "../review/review.entity";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CartEntity } from "../cart/cart.entity";
       CartEntity,
       OrderEntity,
       OrderItemEntity,
+      ReviewEntity,
     ]),
   ],
   controllers: [OrderController],
