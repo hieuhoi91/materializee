@@ -19,7 +19,7 @@ export class CartController {
   @Get("/")
   @Auth()
   async findUserCart(@Req() req) {
-    const data = await this.cartService.findCartById(req.user.cartId);
+    const data = await this.cartService.findCartById(req.user.cart_id);
     return new SimpleResponse(data);
   }
 
