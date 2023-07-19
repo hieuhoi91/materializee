@@ -4,7 +4,7 @@ import { SharedModule } from "../../shared/services/shared.module";
 import { ApiConfigService } from "../../shared/services/api-config.service";
 import { MailerService } from "./mailer.service";
 import { MailerController } from "./mailer.controller";
-// 2051120316@ut.edu.vn
+
 @Module({
   imports: [
     NestMailerModule.forRootAsync({

@@ -13,7 +13,7 @@ export class MailerController {
     try {
       await this.nestMailerService.sendMail({
         to: "thanhbkbk111@gmail.com",
-        from: "3langn@gmail.com",
+        from: "2051120316@ut.edu.vn",
         subject: "Liên hệ hỗ trợ",
         // template: data.template_id,
         text: data.text,
