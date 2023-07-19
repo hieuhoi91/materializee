@@ -18,6 +18,7 @@ import { CartModule } from "./modules/cart/cart.module";
 import { UploadModule } from "./modules/upload/upload.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderModule } from "./modules/order/order.module";
+import { MailerModule } from "./modules/mailer/mailer.module";
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { OrderModule } from "./modules/order/order.module";
         configService.postgresConfig,
       inject: [ApiConfigService],
     }),
+    MailerModule,
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,

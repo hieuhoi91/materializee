@@ -2,10 +2,26 @@ import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { isNil } from "lodash";
+import { EjsAdapter } from "@nestjs-modules/mailer/dist/adapters/ejs.adapter";
+import { MailerOptions } from "@nestjs-modules/mailer";
 
 @Injectable()
 export class ApiConfigService {
   constructor(private configService: ConfigService) {}
+
+  get mailerConfig(): MailerOptions {
+    return {
+      transport: {
+        host: this.getString("EMAIL_HOST"),
+        port: this.getNumber("EMAIL_PORT"),
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: this.getString("EMAIL_USER"), // generated ethereal user
+          pass: this.getString("EMAIL_PASSWORD"), // generated ethereal password
+        },
+      },
+    };
+  }
 
   get isDevelopment(): boolean {
     return this.nodeEnv === "development";
