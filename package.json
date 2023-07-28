@@ -26,6 +26,7 @@
     "migrate:down": "ts-node ./node_modules/typeorm/cli.js migration:revert"
   },
   "dependencies": {
+    "@nestjs-modules/mailer": "^1.9.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
     "@nestjs/core": "^9.0.0",
