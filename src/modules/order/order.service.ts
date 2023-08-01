@@ -207,11 +207,55 @@ export class OrderService implements OrderServiceInterface {
       .select("SUM(order.total_price)", "total_price")
       .getRawOne();
 
+    // tính tổng tiền đã bán theo từng tháng
+    const total_spent_records = await this.orderRepository
+      .createQueryBuilder("order")
+      .select("SUM(order.total_price)", "total_price")
+      .addSelect("DATE_TRUNC('month', order.created_at)", "month")
+      .groupBy("month")
+      .getRawMany();
+
+    // tính tổng tiền đã bán theo 12 tháng, nếu  không có thì trả về 0
+    // ví dụ {1: 100, 2: 200, 3: 0, 4: 0, 5: 0, 6: 0,7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0}
+    const total_spent = Array.from({ length: 12 }, (_, i) => i + 1).reduce(
+      (map, obj) => {
+        const month = total_spent_records.find(
+          record => record.month.getMonth() + 1 === obj,
+        );
+        if (month) {
+          map[obj] = Number(month.total_price);
+        } else {
+          map[obj] = 0;
+        }
+        return map;
+      },
+      {},
+    );
+
+    const fiveMostSpentUsers = await this.orderRepository
+      .createQueryBuilder("order")
+      .select("SUM(order.total_price)", "total_price")
+      .addSelect("order.user_id", "user_id")
+      .groupBy("user_id")
+      .orderBy("total_price", "DESC")
+      .limit(5)
+      .getRawMany();
+
+    const users = await this.userRepository.find({
+      where: {
+        id: In(fiveMostSpentUsers.map(user => user.user_id)),
+      },
+    });
+
     return {
-      user_count: await this.userRepository.count(),
-      order_count: await this.orderRepository.count(),
-      total_price: Number(total_price.total_price),
-      item_count: await this.itemRepository.count(),
+      count: {
+        user_count: await this.userRepository.count(),
+        order_count: await this.orderRepository.count(),
+        total_price: Number(total_price.total_price),
+        item_count: await this.itemRepository.count(),
+      },
+      total_spent,
+      fiveMostSpentUsers: users,
     };
   }
 }
