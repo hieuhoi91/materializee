@@ -1,17 +1,28 @@
-import { Controller, Get } from '@nestjs/common';
-import { HealthService } from './health.service';
+import { Controller, Get } from "@nestjs/common";
+import { HealthService } from "./health.service";
+import { ApiConfigService } from "../../shared/services/api-config.service";
+import axios from "axios";
+import { Cron } from "@nestjs/schedule";
 
-@Controller('health')
+@Controller("health")
 export class HealthController {
-  constructor(private healthService: HealthService) {}
+  constructor(private configService: ApiConfigService) {}
 
   @Get()
   async healthCheck(): Promise<any> {
     return {
-      name: 'Materialize',
-      status: 'ok',
-      message: 'Server is running',
+      name: "Materialize",
+      status: "ok",
+      message: "Server is running",
       timestamp: new Date().toISOString(),
     };
+  }
+
+  @Cron("0 */5 * * * *")
+  async cronHeathCheck() {
+    if (!this.configService.isDevelopment) return;
+    try {
+      await axios.get(this.configService.host + "/api/health");
+    } catch (error) {}
   }
 }

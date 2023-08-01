@@ -175,4 +175,27 @@ export class OrderService implements OrderServiceInterface {
       throw new BadRequestException(e.message);
     }
   }
+
+  async orderComplete(orderId: string): Promise<void> {
+    try {
+      const order = await this.orderRepository.findOne({
+        where: { id: orderId },
+      });
+
+      if (!order) {
+        throw new BadRequestException("Order not found");
+      }
+
+      if (order.status !== OrderStatus.PENDING) {
+        throw new BadRequestException("Order cannot be completed");
+      }
+
+      order.status = OrderStatus.COMPLETED;
+      await this.orderRepository.save(order);
+
+      this.logger.log(`Order complete success`);
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
 }

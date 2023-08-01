@@ -37,4 +37,14 @@ export class OrderController {
     await this.orderService.cancel(body.order_id, req.user.id);
     return new SimpleResponse(null, "Canceled successfully");
   }
+
+  @Post("/order-complete")
+  async orderComplete(
+    @Body()
+    body: { order_id: string },
+    @Req() req,
+  ): Promise<SimpleResponse<any>> {
+    await this.orderService.orderComplete(body.order_id);
+    return new SimpleResponse(null, "Order completed successfully");
+  }
 }

@@ -23,6 +23,10 @@ export class ApiConfigService {
     };
   }
 
+  get host(): string {
+    return this.getString("HOST");
+  }
+
   get isDevelopment(): boolean {
     return this.nodeEnv === "development";
   }
