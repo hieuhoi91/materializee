@@ -24,12 +24,12 @@ async function bootstrap() {
   // app.use(helmet.default());
   app.setGlobalPrefix("/api");
 
-  app.use(
-    rateLimit({
-      windowMs: 15 * 60 * 1000,
-      max: 10000,
-    }),
-  );
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 15 * 60 * 1000,
+  //     max: 1000000,
+  //   }),
+  // );
 
   app.use(compression());
 
