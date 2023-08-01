@@ -35,6 +35,8 @@ export class OrderService implements OrderServiceInterface {
     private cartItemRepository: Repository<CartItemEntity>,
     @InjectRepository(ReviewEntity)
     private reviewRepository: Repository<ReviewEntity>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async create(c: CreateOrderRequestBaseDto, userId: string): Promise<void> {
@@ -197,5 +199,19 @@ export class OrderService implements OrderServiceInterface {
     } catch (e) {
       throw new BadRequestException(e.message);
     }
+  }
+
+  async count(): Promise<any> {
+    const total_price = await this.orderRepository
+      .createQueryBuilder("order")
+      .select("SUM(order.total_price)", "total_price")
+      .getRawOne();
+
+    return {
+      user_count: await this.userRepository.count(),
+      order_count: await this.orderRepository.count(),
+      total_price: Number(total_price.total_price),
+      item_count: await this.itemRepository.count(),
+    };
   }
 }

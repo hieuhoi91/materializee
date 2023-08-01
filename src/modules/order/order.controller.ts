@@ -47,4 +47,10 @@ export class OrderController {
     await this.orderService.orderComplete(body.order_id);
     return new SimpleResponse(null, "Order completed successfully");
   }
+
+  @Get("/count")
+  async count(): Promise<SimpleResponse<any>> {
+    const data = await this.orderService.count();
+    return new SimpleResponse(data);
+  }
 }
