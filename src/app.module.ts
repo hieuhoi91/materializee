@@ -19,6 +19,7 @@ import { UploadModule } from "./modules/upload/upload.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderModule } from "./modules/order/order.module";
 import { MailerModule } from "./modules/mailer/mailer.module";
+import { ScheduleModule } from "@nestjs/schedule";
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { MailerModule } from "./modules/mailer/mailer.module";
         configService.postgresConfig,
       inject: [ApiConfigService],
     }),
+    ScheduleModule.forRoot(),
     MailerModule,
     WinstonModule.forRoot(winstonConfig),
     AuthModule,

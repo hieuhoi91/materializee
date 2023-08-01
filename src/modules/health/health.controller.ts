@@ -23,6 +23,9 @@ export class HealthController {
     if (!this.configService.isDevelopment) return;
     try {
       await axios.get(this.configService.host + "/api/health");
-    } catch (error) {}
+      console.log("Cron Health Check");
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
