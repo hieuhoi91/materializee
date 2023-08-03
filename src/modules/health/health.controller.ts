@@ -18,10 +18,10 @@ export class HealthController {
     };
   }
 
-  @Cron("0 */5 * * * *")
+  @Cron("* * * * * *")
   async cronHeathCheck() {
-    if (!this.configService.isDevelopment) return;
     try {
+      if (!this.configService.isDevelopment) return;
       await axios.get(this.configService.host + "/api/health");
       console.log("Cron Health Check");
     } catch (error) {
