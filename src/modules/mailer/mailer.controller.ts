@@ -12,7 +12,7 @@ export class MailerController {
   public async sendMail(@Body() data: EmailMessageDto) {
     try {
       await this.nestMailerService.sendMail({
-        to: "2051120316@ut.edu.vn",
+        to: "hieuhoi912002@gmail.com",
         from: "thanhbkbk111@gmail.com",
         subject: "Liên hệ hỗ trợ",
         // template: data.template_id,
