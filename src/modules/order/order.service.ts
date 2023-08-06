@@ -123,20 +123,32 @@ export class OrderService implements OrderServiceInterface {
         where: { user_id: userId },
       });
 
-      orders.forEach(order => {
-        order.orderItems.forEach(item => {
-          const review = reviews.find(
-            review => review.order_item_id === item.id,
-          );
+      console.log("!!!!0");
 
-          if (review) {
-            item.is_reviewed = true;
-          } else {
-            item.is_reviewed = false;
-          }
-        });
-      });
-      return orders;
+      const ccc = await Promise.all(
+        orders.map(async order => {
+          const user = await this.userRepository.findOne({
+            where: { id: order.user_id },
+          });
+          order.user = user;
+          order.orderItems.forEach(item => {
+            const review = reviews.find(
+              review => review.order_item_id === item.id,
+            );
+
+            if (review) {
+              item.is_reviewed = true;
+            } else {
+              item.is_reviewed = false;
+            }
+          });
+          return order;
+        }),
+      );
+
+      console.log("!!!!1");
+
+      return ccc;
     } catch (e) {
       throw new BadRequestException(e.message);
     }
@@ -241,10 +253,20 @@ export class OrderService implements OrderServiceInterface {
       .limit(5)
       .getRawMany();
 
-    const users = await this.userRepository.find({
+    const users: any = await this.userRepository.find({
       where: {
         id: In(fiveMostSpentUsers.map(user => user.user_id)),
       },
+    });
+
+    // tính tổng tiền 5 người mua nhiều nhất đã mua
+    const fiveMostSpentUsersMap = fiveMostSpentUsers.reduce((map, obj) => {
+      map[obj.user_id] = obj.total_price;
+      return map;
+    }, {});
+
+    users.forEach(user => {
+      user.total_spent = fiveMostSpentUsersMap[user.id];
     });
 
     return {
