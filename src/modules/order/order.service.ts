@@ -154,6 +154,29 @@ export class OrderService implements OrderServiceInterface {
     }
   }
 
+  async listAdmin(): Promise<any> {
+    try {
+      // check user already review
+      const orders: any = await this.orderRepository.find({
+        relations: ["orderItems", "orderItems.item"],
+      });
+
+      const ccc = await Promise.all(
+        orders.map(async order => {
+          const user = await this.userRepository.findOne({
+            where: { id: order.user_id },
+          });
+          order.user = user;
+          return order;
+        }),
+      );
+
+      return ccc;
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
+  }
+
   async cancel(orderId: string, userId: string): Promise<void> {
     try {
       const order = await this.orderRepository.findOne({

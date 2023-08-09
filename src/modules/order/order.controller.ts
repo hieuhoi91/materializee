@@ -28,6 +28,13 @@ export class OrderController {
   }
 
   @Auth()
+  @Get("/list-admin")
+  async listAdmin(@Req() req): Promise<SimpleResponse<any>> {
+    const data = await this.orderService.listAdmin();
+    return new SimpleResponse(data);
+  }
+
+  @Auth()
   @Post("/cancel")
   async cancel(
     @Body()
