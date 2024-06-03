@@ -11,7 +11,15 @@ export class ApiConfigService {
 
   get mailerConfig(): MailerOptions {
     return {
-     
+      transport: {
+        host: this.getString("EMAIL_HOST"),
+        port: this.getNumber("EMAIL_PORT"),
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: this.getString("EMAIL_USER"), // generated ethereal user
+          pass: this.getString("EMAIL_PASSWORD"), // generated ethereal password
+        },
+      },
     };
   }
 
