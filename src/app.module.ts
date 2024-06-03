@@ -20,6 +20,7 @@ import { ReviewModule } from "./modules/review/review.module";
 import { OrderModule } from "./modules/order/order.module";
 import { MailerModule } from "./modules/mailer/mailer.module";
 import { ScheduleModule } from "@nestjs/schedule";
+import { CronModule } from "./modules/cron/cron.module";
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ScheduleModule } from "@nestjs/schedule";
     UploadModule,
     ReviewModule,
     OrderModule,
+    CronModule,
   ],
   // providers: [
   //   {
