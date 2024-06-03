@@ -12,7 +12,6 @@ import { SharedModule } from "./shared/services/shared.module";
 import { ApiConfigService } from "./shared/services/api-config.service";
 import { ConfigModule } from "@nestjs/config";
 import { CategoryModule } from "./modules/category/category.module";
-import { HealthModule } from "./modules/health/health.module";
 import { ItemModule } from "./modules/item/item.module";
 import { CartModule } from "./modules/cart/cart.module";
 import { UploadModule } from "./modules/upload/upload.module";
@@ -53,7 +52,6 @@ import { CronModule } from "./modules/cron/cron.module";
     ItemModule,
     CartModule,
     CategoryModule,
-    HealthModule,
     UploadModule,
     ReviewModule,
     OrderModule,
